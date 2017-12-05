@@ -162,7 +162,22 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
          /* Read date from the cursor */
         long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
          /* Get human readable string using our utility method */
-        String dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateInMillis, false);
+        String dateString;
+        switch (viewType) {
+
+            case VIEW_TYPE_TODAY:
+                dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateInMillis, false);
+
+                break;
+
+            case VIEW_TYPE_FUTURE_DAY:
+                 dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateInMillis, false);
+
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid view type, value of " + viewType);
+        }
 
          /* Display friendly date string */
         forecastAdapterViewHolder.dateView.setText(dateString);

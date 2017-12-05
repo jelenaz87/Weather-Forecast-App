@@ -16,6 +16,15 @@ android {
         release {
             minifyEnabled false
         }
+        packagingOptions {
+            exclude 'META-INF/DEPENDENCIES'
+            exclude 'META-INF/NOTICE'
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE.txt'
+            exclude 'META-INF/ASL2.0'
+        }
+
     }
 
 //  TODO (1) Enable databinding
@@ -26,13 +35,16 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:25.1.0'
 
+
+
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.android.support:preference-v7:25.0.1'
-
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
-
     compile 'com.firebase:firebase-jobdispatcher:0.5.0'
-
     // Instrumentation dependencies use androidTestCompile
     // (as opposed to testCompile for local unit tests run in the JVM)
     androidTestCompile 'junit:junit:4.12'

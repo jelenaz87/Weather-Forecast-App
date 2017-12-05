@@ -19,6 +19,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.android.sunshine.ApiClient;
+import com.example.android.sunshine.WeatherObject;
 import com.example.android.sunshine.data.SunshinePreferences;
 
 import java.io.IOException;
@@ -27,6 +29,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+
+import retrofit2.Call;
 
 /**
  * These utilities will be used to communicate with the weather servers.
@@ -54,7 +58,7 @@ public final class NetworkUtils {
     private static final String STATIC_WEATHER_URL =
             "https://andfun-weather.udacity.com/staticweather";
 
-    private static final String FORECAST_BASE_URL = STATIC_WEATHER_URL;
+    public static final String FORECAST_BASE_URL = STATIC_WEATHER_URL;
 
     /*
      * NOTE: These values only effect responses from OpenWeatherMap, NOT from the fake weather
@@ -64,24 +68,24 @@ public final class NetworkUtils {
      */
 
     /* The format we want our API to return */
-    private static final String format = "json";
+    public static final String format = "json";
     /* The units we want our API to return */
-    private static final String units = "metric";
+    public static final String units = "metric";
     /* The number of days we want our API to return */
-    private static final int numDays = 14;
+    public static final int numDays = 14;
 
     /* The query parameter allows us to provide a location string to the API */
-    private static final String QUERY_PARAM = "q";
+    public static final String QUERY_PARAM = "q";
 
-    private static final String LAT_PARAM = "lat";
-    private static final String LON_PARAM = "lon";
+   public static final String LAT_PARAM = "lat";
+    public static final String LON_PARAM = "lon";
 
     /* The format parameter allows us to designate whether we want JSON or XML from our API */
-    private static final String FORMAT_PARAM = "mode";
+    public static final String FORMAT_PARAM = "mode";
     /* The units parameter allows us to designate whether we want metric units or imperial units */
-    private static final String UNITS_PARAM = "units";
+    public static final String UNITS_PARAM = "units";
     /* The days parameter allows us to designate how many days of weather data we want */
-    private static final String DAYS_PARAM = "cnt";
+    public static final String DAYS_PARAM = "cnt";
 
     /**
      * Retrieves the proper URL to query for the weather data. The reason for both this method as
