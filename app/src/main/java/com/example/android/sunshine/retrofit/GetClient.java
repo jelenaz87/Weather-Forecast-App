@@ -1,20 +1,16 @@
-package com.example.android.sunshine;
-
-import android.content.ContentValues;
+package com.example.android.sunshine.retrofit;
 
 import com.example.android.sunshine.utilities.NetworkUtils;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 /**
  * Created by jelena.zivanovic on 12/4/2017.
  */
 
-public interface GetResponse {
+public interface GetClient {
 
  //   Call<WeatherObject>getWeatherObject(@Url String url);
     @GET ("staticweather")

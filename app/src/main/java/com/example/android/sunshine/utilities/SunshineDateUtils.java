@@ -223,30 +223,31 @@ public final class SunshineDateUtils {
          */
         long daysFromEpochToToday = elapsedDaysSinceEpoch(System.currentTimeMillis());
 
-        if (daysFromEpochToProvidedDate == daysFromEpochToToday || showFullDate) {
-            /*
-             * If the date we're building the String for is today's date, the format
-             * is "Today, June 24"
-             */
-            String dayName = getDayName(context, localDate);
-            String readableDate = getReadableDateString(context, localDate);
-            if (daysFromEpochToProvidedDate - daysFromEpochToToday < 2) {
-                /*
-                 * Since there is no localized format that returns "Today" or "Tomorrow" in the API
-                 * levels we have to support, we take the name of the day (from SimpleDateFormat)
-                 * and use it to replace the date from DateUtils. This isn't guaranteed to work,
-                 * but our testing so far has been conclusively positive.
-                 *
-                 * For information on a simpler API to use (on API > 18), please check out the
-                 * documentation on DateFormat#getBestDateTimePattern(Locale, String)
-                 * https://developer.android.com/reference/android/text/format/DateFormat.html#getBestDateTimePattern
-                 */
-                String localizedDayName = new SimpleDateFormat("EEEE").format(localDate);
-                return readableDate.replace(localizedDayName, dayName);
-            } else {
-                return readableDate;
-            }
-        } else if (daysFromEpochToProvidedDate < daysFromEpochToToday + 7) {
+//        if (daysFromEpochToProvidedDate == daysFromEpochToToday || showFullDate) {
+//            /*
+//             * If the date we're building the String for is today's date, the format
+//             * is "Today, June 24"
+//             */
+//            String dayName = getDayName(context, localDate);
+//            String readableDate = getReadableDateString(context, localDate);
+//            if (daysFromEpochToProvidedDate - daysFromEpochToToday < 2) {
+//                /*
+//                 * Since there is no localized format that returns "Today" or "Tomorrow" in the API
+//                 * levels we have to support, we take the name of the day (from SimpleDateFormat)
+//                 * and use it to replace the date from DateUtils. This isn't guaranteed to work,
+//                 * but our testing so far has been conclusively positive.
+//                 *
+//                 * For information on a simpler API to use (on API > 18), please check out the
+//                 * documentation on DateFormat#getBestDateTimePattern(Locale, String)
+//                 * https://developer.android.com/reference/android/text/format/DateFormat.html#getBestDateTimePattern
+//                 */
+//                String localizedDayName = new SimpleDateFormat("EEEE").format(localDate);
+//                return readableDate.replace(localizedDayName, dayName);
+//            } else {
+//                return readableDate;
+//            }
+//        } else
+               if (daysFromEpochToProvidedDate < daysFromEpochToToday + 7) {
             /* If the input date is less than a week in the future, just return the day name. */
             return getDayName(context, localDate);
         } else {
@@ -290,7 +291,7 @@ public final class SunshineDateUtils {
          * If the date is today, return the localized version of "Today" instead of the actual
          * day name.
          */
-        long daysFromEpochToProvidedDate = elapsedDaysSinceEpoch(dateInMillis);
+        long daysFromEpochToProvidedDate = elapsedDaysSinceEpoch(dateInMillis)+1;
         long daysFromEpochToToday = elapsedDaysSinceEpoch(System.currentTimeMillis());
 
         int daysAfterToday = (int) (daysFromEpochToProvidedDate - daysFromEpochToToday);

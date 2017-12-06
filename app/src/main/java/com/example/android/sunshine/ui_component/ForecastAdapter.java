@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine;
+package com.example.android.sunshine.ui_component;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.sunshine.R;
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 import com.example.android.sunshine.utilities.SunshineWeatherUtils;
 
@@ -162,22 +163,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
          /* Read date from the cursor */
         long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
          /* Get human readable string using our utility method */
-        String dateString;
-        switch (viewType) {
-
-            case VIEW_TYPE_TODAY:
-                dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateInMillis, false);
-
-                break;
-
-            case VIEW_TYPE_FUTURE_DAY:
-                 dateString = SunshineDateUtils.getFriendlyDateString(mContext, dateInMillis, false);
-
-                break;
-
-            default:
-                throw new IllegalArgumentException("Invalid view type, value of " + viewType);
-        }
+        String dateString= SunshineDateUtils.getFriendlyDateString(mContext, dateInMillis, false);
 
          /* Display friendly date string */
         forecastAdapterViewHolder.dateView.setText(dateString);

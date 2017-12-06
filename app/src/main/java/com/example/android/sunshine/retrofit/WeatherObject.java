@@ -1,4 +1,4 @@
-package com.example.android.sunshine;
+package com.example.android.sunshine.retrofit;
 
 
 import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;

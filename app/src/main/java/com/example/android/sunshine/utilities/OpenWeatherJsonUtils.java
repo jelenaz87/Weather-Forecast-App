@@ -18,18 +18,13 @@ package com.example.android.sunshine.utilities;
 import android.content.ContentValues;
 import android.content.Context;
 
-import com.example.android.sunshine.ApiClient;
-import com.example.android.sunshine.WeatherObject;
+import com.example.android.sunshine.retrofit.WeatherObject;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
-
-import retrofit2.Call;
 
 /**
  * Utility functions to handle OpenWeatherMap JSON data.

@@ -19,8 +19,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.android.sunshine.ApiClient;
-import com.example.android.sunshine.WeatherObject;
 import com.example.android.sunshine.data.SunshinePreferences;
 
 import java.io.IOException;
@@ -29,8 +27,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
-
-import retrofit2.Call;
 
 /**
  * These utilities will be used to communicate with the weather servers.
