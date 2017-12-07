@@ -35,6 +35,17 @@ import java.net.URL;
 
 public class SunshineSyncTask {
 
+    private final Context context;
+    private SunshineDatabaseOperations sunshineDatabaseOperations;
+    private SunshineNotifications sunshineNotifications;
+    private ContentValues[] weatherValues;
+
+    public SunshineSyncTask(Context context) {
+        this.context = context;
+        weatherValues = null;
+        sunshineDatabaseOperations = new SunshineDatabaseOperations(context);
+        sunshineNotifications = new SunshineNotifications(context);
+    }
 
     /**
      * Performs the network request for updated weather, parses the JSON from that request, and
@@ -42,9 +53,9 @@ public class SunshineSyncTask {
      * weather has been loaded if the user hasn't been notified of the weather within the last day
      * AND they haven't disabled notifications in the preferences screen.
      *
-     * @param context Used to access utility methods and the ContentResolver
+     *
      */
-    synchronized public static void syncWeather(final Context context) {
+    synchronized public void syncWeather() {
 
         try {
             /*
@@ -60,58 +71,15 @@ public class SunshineSyncTask {
             getWeatherObject.getWeather(new WeatherObjectResult() {
                 @Override
                 public void onSucess(WeatherObject object) {
-                    ContentValues[] weatherValues = null;
-                    try {
-                        weatherValues = OpenWeatherJsonUtils
-                                .getWeatherContentValuesFromJson(context, object);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
-                    if (weatherValues != null && weatherValues.length != 0) {
-                /* Get a handle on the ContentResolver to delete and insert data */
-                        ContentResolver sunshineContentResolver = context.getContentResolver();
+                     setContentValues(object);
 
-                /* Delete old weather data because we don't need to keep multiple days' data */
-                        sunshineContentResolver.delete(
-                                WeatherContract.WeatherEntry.CONTENT_URI,
-                                null,
-                                null);
+                    if (isWeatherNotNullAndLengthNotZero()) {
 
-                /* Insert our new weather data into Sunshine's ContentProvider */
-                        sunshineContentResolver.bulkInsert(
-                                WeatherContract.WeatherEntry.CONTENT_URI,
-                                weatherValues);
+                        sunshineDatabaseOperations.insertNewValueIntoDatabase(weatherValues);
+                        sunshineNotifications.setSunshineNotification();
 
-                /*
-                 * Finally, after we insert data into the ContentProvider, determine whether or not
-                 * we should notify the user that the weather has been refreshed.
-                 */
-                        boolean notificationsEnabled = SunshinePreferences.areNotificationsEnabled(context);
-
-                /*
-                 * If the last notification was shown was more than 1 day ago, we want to send
-                 * another notification to the user that the weather has been updated. Remember,
-                 * it's important that you shouldn't spam your users with notifications.
-                 */
-                        long timeSinceLastNotification = SunshinePreferences
-                                .getEllapsedTimeSinceLastNotification(context);
-
-                        boolean oneDayPassedSinceLastNotification = false;
-
-                        if (timeSinceLastNotification >= DateUtils.DAY_IN_MILLIS) {
-                            oneDayPassedSinceLastNotification = true;
-                        }
-
-                /*
-                 * We only want to show the notification if the user wants them shown and we
-                 * haven't shown a notification in the past day.
-                 */
-                        if (notificationsEnabled && oneDayPassedSinceLastNotification) {
-                            NotificationUtils.notifyUserOfNewWeather(context);
-                        }
-
-            /* If the code reaches this point, we have successfully performed our sync */
+               /* If the code reaches this point, we have successfully performed our sync */
 
                     }
                 }
@@ -143,5 +111,19 @@ public class SunshineSyncTask {
             /* Server probably invalid */
             e.printStackTrace();
         }
+    }
+
+    private  boolean isWeatherNotNullAndLengthNotZero() {
+        return weatherValues != null && weatherValues.length != 0;
+    }
+
+    private void setContentValues(WeatherObject object) {
+        try {
+            weatherValues = OpenWeatherJsonUtils
+                    .getWeatherContentValuesFromJson(context, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }
