@@ -62,8 +62,8 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      * is in landscape. This flag will be set in the constructor of the adapter by accessing
      * boolean resources.
      */
-    private boolean mUseTodayLayout;
-
+  //  private boolean mUseTodayLayout;
+      private int orient= 0;
     private Cursor mCursor;
 
     /**
@@ -76,7 +76,8 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
     public ForecastAdapter(@NonNull Context context, ForecastAdapterOnClickHandler clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
-        mUseTodayLayout = mContext.getResources().getBoolean(R.bool.use_today_layout);
+        orient =  mContext.getResources().getConfiguration().orientation;
+ //       mUseTodayLayout = mContext.getResources().getBoolean(R.bool.use_today_layout);
     }
 
     /**
@@ -239,7 +240,7 @@ class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapt
      */
     @Override
     public int getItemViewType(int position) {
-        if (mUseTodayLayout && position == 0) {
+        if ( orient == 1 && position == 0) {
             return VIEW_TYPE_TODAY;
         } else {
             return VIEW_TYPE_FUTURE_DAY;
