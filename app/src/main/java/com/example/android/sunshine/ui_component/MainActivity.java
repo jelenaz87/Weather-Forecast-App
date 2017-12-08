@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -31,17 +32,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
+import com.example.android.sunshine.retrofit.WeatherObject;
+import com.example.android.sunshine.retrofit.WeatherObjectResult;
+import com.example.android.sunshine.sync.SunshineSyncTask;
 import com.example.android.sunshine.sync.SunshineSyncUtils;
+
+import java.io.Serializable;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        ForecastAdapter.ForecastAdapterOnClickHandler {
+        ForecastAdapter.ForecastAdapterOnClickHandler,SunshineSyncTask.NetworkConnection,Serializable{
 
     private final String TAG = MainActivity.class.getSimpleName();
+    private SunshineSyncTask.NetworkConnection networkConnection;
 
     /*
      * The columns of data that we are interested in displaying within our MainActivity's list of
@@ -65,13 +73,18 @@ public class MainActivity extends AppCompatActivity implements
     public static final int INDEX_WEATHER_CONDITION_ID = 3;
 
 
+
+    public MainActivity() {
+        this.networkConnection = new MainActivity();
+    }
+
     /*
-     * This ID will be used to identify the Loader responsible for loading our weather forecast. In
-     * some cases, one Activity can deal with many Loaders. However, in our case, there is only one.
-     * We will still use this ID to initialize the loader and create the loader for best practice.
-     * Please note that 44 was chosen arbitrarily. You can use whatever number you like, so long as
-     * it is unique and consistent.
-     */
+         * This ID will be used to identify the Loader responsible for loading our weather forecast. In
+         * some cases, one Activity can deal with many Loaders. However, in our case, there is only one.
+         * We will still use this ID to initialize the loader and create the loader for best practice.
+         * Please note that 44 was chosen arbitrarily. You can use whatever number you like, so long as
+         * it is unique and consistent.
+         */
     private static final int ID_FORECAST_LOADER = 44;
 
     private ForecastAdapter mForecastAdapter;
@@ -153,9 +166,10 @@ public class MainActivity extends AppCompatActivity implements
          */
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
 
-       new SunshineSyncUtils().initialize(this);
+       new SunshineSyncUtils().initialize(this,this);
 
     }
+
 
     /**
      * Uses the URI scheme for showing a location found on a map in conjunction with
@@ -343,5 +357,12 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
+    public void connectionError() {
+        Toast.makeText(this, "Nema internet konekcije", Toast.LENGTH_SHORT).show();
     }
 }

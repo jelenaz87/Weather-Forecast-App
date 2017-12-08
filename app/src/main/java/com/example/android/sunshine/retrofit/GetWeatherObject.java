@@ -2,6 +2,11 @@ package com.example.android.sunshine.retrofit;
 
 import com.example.android.sunshine.utilities.NetworkUtils;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -13,33 +18,34 @@ import retrofit2.Response;
 public class GetWeatherObject {
 
 
-
     private String locationQuery;
 
     public GetWeatherObject(String locationQuery) {
         this.locationQuery = locationQuery;
+
     }
 
-
     public void getWeather(final WeatherObjectResult result) {
-        Call<WeatherObject> objectCall = ApiClient.getResponse().getWeatherObject(locationQuery, NetworkUtils.format, NetworkUtils.units, Integer.toString(NetworkUtils.numDays));
+        Call<WeatherObject>objectCall = ApiClient.getResponse().getWeatherObject(locationQuery, NetworkUtils.format, NetworkUtils.units, Integer.toString(NetworkUtils.numDays));
         objectCall.enqueue(new Callback<WeatherObject>() {
-            @Override
-            public void onResponse(Call<WeatherObject> call, Response<WeatherObject> response) {
-                if (response.isSuccessful()) {
-                    WeatherObject weatherObject = response.body();
-                    result.onSucess(weatherObject);
+                    @Override
+                    public void onResponse(Call<WeatherObject> call, Response<WeatherObject> response) {
+                        if (response.isSuccessful()) {
+                            WeatherObject weatherObject = response.body();
+                            result.onSucess(weatherObject);
 
-                } else {
-                    result.onFailure("On response ");
-                }
+                        } else {
+                            result.onFailure("On response ");
+                        }
 
-            }
 
-            @Override
-            public void onFailure(Call<WeatherObject> call, Throwable throwable) {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<WeatherObject> call, Throwable throwable) {
+
+                    }
+                });
     }
 }

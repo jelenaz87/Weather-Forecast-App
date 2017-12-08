@@ -18,6 +18,8 @@ package com.example.android.sunshine.sync;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.format.DateUtils;
 
 import com.example.android.sunshine.retrofit.WeatherObject;
@@ -31,7 +33,13 @@ import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
 
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.net.URL;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class SunshineSyncTask {
 
@@ -39,12 +47,22 @@ public class SunshineSyncTask {
     private SunshineDatabaseOperations sunshineDatabaseOperations;
     private SunshineNotifications sunshineNotifications;
     private ContentValues[] weatherValues;
+    private NetworkConnection connection;
 
-    public SunshineSyncTask(Context context) {
+
+
+    public SunshineSyncTask(Context context, NetworkConnection connection) {
         this.context = context;
         weatherValues = null;
         sunshineDatabaseOperations = new SunshineDatabaseOperations(context);
         sunshineNotifications = new SunshineNotifications(context);
+        this.connection = connection;
+
+
+    }
+
+    public interface NetworkConnection extends Serializable{
+        public void connectionError ();
     }
 
     /**
@@ -58,6 +76,8 @@ public class SunshineSyncTask {
     synchronized public void syncWeather() {
 
         try {
+
+
             /*
              * The getUrl method will return the URL that we need to get the forecast JSON for the
              * weather. It will decide whether to create a URL based off of the latitude and
@@ -67,33 +87,40 @@ public class SunshineSyncTask {
 
             String locationQuery = SunshinePreferences.getPreferredWeatherLocation(context);
 
-            GetWeatherObject getWeatherObject = new GetWeatherObject(locationQuery);
-            getWeatherObject.getWeather(new WeatherObjectResult() {
-                @Override
-                public void onSucess(WeatherObject object) {
+            ConnectivityManager cm
+                    = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo ai= cm.getActiveNetworkInfo();
 
-                     setContentValues(object);
 
-                    if (isWeatherNotNullAndLengthNotZero()) {
+            if (ai != null) {
 
-                        sunshineDatabaseOperations.insertNewValueIntoDatabase(weatherValues);
-                        sunshineNotifications.setSunshineNotification();
+                GetWeatherObject getWeatherObject = new GetWeatherObject(locationQuery);
+                getWeatherObject.getWeather(new WeatherObjectResult() {
+                    @Override
+                    public void onSucess(WeatherObject object) {
+
+                        setContentValues(object);
+
+                        if (isWeatherNotNullAndLengthNotZero()) {
+
+                            sunshineDatabaseOperations.insertNewValueIntoDatabase(weatherValues);
+                            sunshineNotifications.setSunshineNotification();
 
                /* If the code reaches this point, we have successfully performed our sync */
 
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(String response) {
+                    @Override
+                    public void onFailure(String response) {
 
-                }
-            });
+                    }
+                });
 
 
 
             /* Use the URL to retrieve the JSON */
-        //    String jsonWeatherResponse = NetworkUtils.getResponseFromHttpUrl(weatherRequestUrl);
+                //    String jsonWeatherResponse = NetworkUtils.getResponseFromHttpUrl(weatherRequestUrl);
 
             /* Parse the JSON into a list of weather values */
 
@@ -105,6 +132,11 @@ public class SunshineSyncTask {
              * NullPointerExceptions being thrown. We also have no reason to insert fresh data if
              * there isn't any to insert.
              */
+
+            } else {
+              connection.connectionError();
+            }
+
 
 
         } catch (Exception e) {
@@ -124,6 +156,10 @@ public class SunshineSyncTask {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public class Holder {
 
     }
 }

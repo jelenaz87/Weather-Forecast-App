@@ -1,6 +1,7 @@
 package com.example.android.sunshine.sync;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
@@ -30,10 +31,11 @@ public class FirebaseJobDispatcherSync {
         this.mContext = mContext;
     }
 
-    public void  scheduleFirebaseJobDispatcherSync() {
+    public void  scheduleFirebaseJobDispatcherSync(SunshineSyncTask.NetworkConnection connection) {
         Driver driver = new GooglePlayDriver(mContext);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
-
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("interface",connection);
         /* Create the Job to periodically sync Sunshine */
         Job syncSunshineJob = dispatcher.newJobBuilder()
                 /* The Service that will be used to sync Sunshine's data */
@@ -71,6 +73,8 @@ public class FirebaseJobDispatcherSync {
                  * the old one.
                  */
                 .setReplaceCurrent(true)
+                .setExtras(bundle)
+
                 /* Once the Job is ready, call the builder's build method to return the Job */
                 .build();
 

@@ -12,22 +12,25 @@ public class CheckForEmptyRunnable implements Runnable {
 
     private SunshineDatabaseOperations operations;
     private Context mContext;
+    private SunshineSyncTask.NetworkConnection connection;
 
-    public CheckForEmptyRunnable(Context mContext) {
+    public CheckForEmptyRunnable(Context mContext, SunshineSyncTask.NetworkConnection connection) {
         this.mContext = mContext;
-        operations = new SunshineDatabaseOperations(mContext);
+        this.operations = new SunshineDatabaseOperations(mContext);
+        this.connection = connection;
     }
 
     @Override
     public void run() {
 
-       if (new CheckForEmptyRunnable(mContext).operations.checkContentOfDatabase()) {
+       if (operations.checkContentOfDatabase()) {
             startImmediateSync(mContext);
        }
     }
 
-    public static void startImmediateSync(@NonNull final Context context) {
+    public void startImmediateSync(@NonNull final Context context) {
         Intent intentToSyncImmediately = new Intent(context, SunshineSyncIntentService.class);
+        intentToSyncImmediately.putExtra("this",connection);
         context.startService(intentToSyncImmediately);
     }
 

@@ -17,7 +17,9 @@ package com.example.android.sunshine.sync;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 
+import com.example.android.sunshine.ui_component.MainActivity;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
@@ -26,7 +28,7 @@ import com.firebase.jobdispatcher.RetryStrategy;
 
 public class SunshineFirebaseJobService extends JobService {
 
-    private AsyncTask<Void, Void, Void> mFetchWeatherTask;
+    private AsyncTask<SunshineSyncTask.NetworkConnection, Void, Void> mFetchWeatherTask;
 
     /**
      * The entry point to your Job. Implementations should offload work to another thread of
@@ -41,11 +43,16 @@ public class SunshineFirebaseJobService extends JobService {
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
 
-        mFetchWeatherTask = new AsyncTask<Void, Void, Void>(){
+        mFetchWeatherTask = new AsyncTask<SunshineSyncTask.NetworkConnection, Void, Void>(){
+
             @Override
-            protected Void doInBackground(Void... voids) {
+            protected Void doInBackground(SunshineSyncTask.NetworkConnection... networkConnections) {
                 Context context = getApplicationContext();
-                new  SunshineSyncTask(context).syncWeather();
+                SunshineSyncTask.NetworkConnection networkConnection = networkConnections[0];
+               Bundle bundle = jobParameters.getExtras();
+               SunshineSyncTask.NetworkConnection connection = (SunshineSyncTask.NetworkConnection) bundle.getSerializable("interface");
+
+                new  SunshineSyncTask(context,connection).syncWeather();
                 jobFinished(jobParameters, false);
                 return null;
             }
