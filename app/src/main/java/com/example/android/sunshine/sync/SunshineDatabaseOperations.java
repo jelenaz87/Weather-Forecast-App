@@ -69,7 +69,12 @@ public class SunshineDatabaseOperations {
 
     public  boolean isDatabaseEmpty(Cursor cursor) {
 
-        boolean bool = (cursor == null || cursor.getCount() ==0);
+        boolean bool = false;
+       if (cursor == null || cursor.getCount() == 0) {
+            bool = false;
+        } else {
+            bool = true;
+        }
         cursor.close();
         return bool;
 

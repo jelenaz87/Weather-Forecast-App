@@ -15,10 +15,15 @@
  */
 package com.example.android.sunshine.ui_component;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -32,6 +37,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.sunshine.R;
@@ -39,6 +45,8 @@ import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
 import com.example.android.sunshine.retrofit.WeatherObject;
 import com.example.android.sunshine.retrofit.WeatherObjectResult;
+import com.example.android.sunshine.sync.CheckNetworkConnection;
+import com.example.android.sunshine.sync.SunshineDatabaseOperations;
 import com.example.android.sunshine.sync.SunshineSyncTask;
 import com.example.android.sunshine.sync.SunshineSyncUtils;
 
@@ -46,10 +54,9 @@ import java.io.Serializable;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        ForecastAdapter.ForecastAdapterOnClickHandler,SunshineSyncTask.NetworkConnection,Serializable{
+        ForecastAdapter.ForecastAdapterOnClickHandler{
 
     private final String TAG = MainActivity.class.getSimpleName();
-    private SunshineSyncTask.NetworkConnection networkConnection;
 
     /*
      * The columns of data that we are interested in displaying within our MainActivity's list of
@@ -73,11 +80,6 @@ public class MainActivity extends AppCompatActivity implements
     public static final int INDEX_WEATHER_CONDITION_ID = 3;
 
 
-
-    public MainActivity() {
-        this.networkConnection = new MainActivity();
-    }
-
     /*
          * This ID will be used to identify the Loader responsible for loading our weather forecast. In
          * some cases, one Activity can deal with many Loaders. However, in our case, there is only one.
@@ -88,10 +90,11 @@ public class MainActivity extends AppCompatActivity implements
     private static final int ID_FORECAST_LOADER = 44;
 
     private ForecastAdapter mForecastAdapter;
-    private RecyclerView mRecyclerView;
+    public RecyclerView mRecyclerView;
     private int mPosition = RecyclerView.NO_POSITION;
 
-    private ProgressBar mLoadingIndicator;
+    public ProgressBar mLoadingIndicator;
+    public TextView textViewErrorConnection;
 
 
     @Override
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements
          * circle. We didn't make the rules (or the names of Views), we just follow them.
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        textViewErrorConnection = (TextView) findViewById(R.id.text_view_network_error);
 
         /*
          * A LinearLayoutManager is responsible for measuring and positioning item views within a
@@ -166,9 +170,21 @@ public class MainActivity extends AppCompatActivity implements
          */
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
 
-       new SunshineSyncUtils().initialize(this,this);
-
+        CheckNetworkConnection connection = new CheckNetworkConnection(this);
+        if (!connection.isNetworkConnectionAvailable(mRecyclerView.getVisibility()) ) {
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+            textViewErrorConnection.setText("It is necessary to have network connection to get weather info!");
+            textViewErrorConnection.setVisibility(View.VISIBLE);
+            int finishTime = 2;
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    finish();
+                }
+            }, finishTime * 1000);
+        }
     }
+
 
 
     /**
@@ -181,6 +197,27 @@ public class MainActivity extends AppCompatActivity implements
      * Protip: Hold Command on Mac or Control on Windows and click that link to automagically
      * open the Common Intents page
      */
+
+
+    private  boolean isNetworkConnectionAvailable () {
+        ConnectivityManager cm
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ai= cm.getActiveNetworkInfo();
+        if (ai != null) {
+            new SunshineSyncUtils().initialize(this);
+            return true;
+        } else {
+              if (mRecyclerView.getVisibility() == View.INVISIBLE) {
+               mLoadingIndicator.setVisibility(View.INVISIBLE);
+               textViewErrorConnection.setText("It is necessary to have internet connection to get weather info!");
+               textViewErrorConnection.setVisibility(View.VISIBLE);
+               return false;
+           } else {
+                  return true;
+              }
+
+        }
+    }
     private void openPreferredLocationInMap() {
         double[] coords = SunshinePreferences.getLocationCoordinates(this);
         String posLat = Double.toString(coords[0]);
@@ -361,8 +398,5 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-    @Override
-    public void connectionError() {
-        Toast.makeText(this, "Nema internet konekcije", Toast.LENGTH_SHORT).show();
-    }
+
 }

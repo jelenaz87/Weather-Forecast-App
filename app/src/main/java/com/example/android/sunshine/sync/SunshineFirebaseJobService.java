@@ -28,7 +28,8 @@ import com.firebase.jobdispatcher.RetryStrategy;
 
 public class SunshineFirebaseJobService extends JobService {
 
-    private AsyncTask<SunshineSyncTask.NetworkConnection, Void, Void> mFetchWeatherTask;
+    private AsyncTask<Void, Void, Void> mFetchWeatherTask;
+
 
     /**
      * The entry point to your Job. Implementations should offload work to another thread of
@@ -43,16 +44,12 @@ public class SunshineFirebaseJobService extends JobService {
     @Override
     public boolean onStartJob(final JobParameters jobParameters) {
 
-        mFetchWeatherTask = new AsyncTask<SunshineSyncTask.NetworkConnection, Void, Void>(){
+        mFetchWeatherTask = new AsyncTask<Void, Void, Void>(){
 
             @Override
-            protected Void doInBackground(SunshineSyncTask.NetworkConnection... networkConnections) {
+            protected Void doInBackground(Void... voids) {
                 Context context = getApplicationContext();
-                SunshineSyncTask.NetworkConnection networkConnection = networkConnections[0];
-               Bundle bundle = jobParameters.getExtras();
-               SunshineSyncTask.NetworkConnection connection = (SunshineSyncTask.NetworkConnection) bundle.getSerializable("interface");
-
-                new  SunshineSyncTask(context,connection).syncWeather();
+                new  SunshineSyncTask(context).syncWeather();
                 jobFinished(jobParameters, false);
                 return null;
             }

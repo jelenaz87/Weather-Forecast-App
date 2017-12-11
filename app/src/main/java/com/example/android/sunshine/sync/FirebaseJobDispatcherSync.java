@@ -11,6 +11,7 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,11 +32,10 @@ public class FirebaseJobDispatcherSync {
         this.mContext = mContext;
     }
 
-    public void  scheduleFirebaseJobDispatcherSync(SunshineSyncTask.NetworkConnection connection) {
+    public void  scheduleFirebaseJobDispatcherSync() {
         Driver driver = new GooglePlayDriver(mContext);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("interface",connection);
+
         /* Create the Job to periodically sync Sunshine */
         Job syncSunshineJob = dispatcher.newJobBuilder()
                 /* The Service that will be used to sync Sunshine's data */
@@ -73,7 +73,7 @@ public class FirebaseJobDispatcherSync {
                  * the old one.
                  */
                 .setReplaceCurrent(true)
-                .setExtras(bundle)
+
 
                 /* Once the Job is ready, call the builder's build method to return the Job */
                 .build();

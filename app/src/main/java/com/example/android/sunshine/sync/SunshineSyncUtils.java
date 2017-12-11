@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.example.android.sunshine.data.WeatherContract;
@@ -47,7 +48,7 @@ public class SunshineSyncUtils {
 //    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
 //    private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
 //
-    private static boolean sInitialized;
+    public static boolean sInitialized;
 //
 //    private static final String SUNSHINE_SYNC_TAG = "sunshine-sync";
 
@@ -111,7 +112,7 @@ public class SunshineSyncUtils {
      * @param context Context that will be passed to other methods and used to access the
      *                ContentResolver
      */
-    synchronized public void initialize(@NonNull final Context context, SunshineSyncTask.NetworkConnection connection) {
+    synchronized public void initialize(@NonNull final Context context) {
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
@@ -128,9 +129,9 @@ public class SunshineSyncUtils {
          * This method call triggers Sunshine to create its task to synchronize weather data
          * periodically.
          */
-       new FirebaseJobDispatcherSync(context).scheduleFirebaseJobDispatcherSync(connection);
+        new FirebaseJobDispatcherSync(context).scheduleFirebaseJobDispatcherSync();
+        executor.execute(new CheckForEmptyRunnable(context));
 
-        executor.execute(new CheckForEmptyRunnable(context, connection));
         /*
          * We need to check to see if our ContentProvider has data to display in our forecast
          * list. However, performing a query on the main thread is a bad idea as this may

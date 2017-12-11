@@ -47,23 +47,21 @@ public class SunshineSyncTask {
     private SunshineDatabaseOperations sunshineDatabaseOperations;
     private SunshineNotifications sunshineNotifications;
     private ContentValues[] weatherValues;
-    private NetworkConnection connection;
 
 
 
-    public SunshineSyncTask(Context context, NetworkConnection connection) {
+
+    public SunshineSyncTask(Context context) {
         this.context = context;
         weatherValues = null;
         sunshineDatabaseOperations = new SunshineDatabaseOperations(context);
         sunshineNotifications = new SunshineNotifications(context);
-        this.connection = connection;
+
 
 
     }
 
-    public interface NetworkConnection extends Serializable{
-        public void connectionError ();
-    }
+
 
     /**
      * Performs the network request for updated weather, parses the JSON from that request, and
@@ -87,12 +85,6 @@ public class SunshineSyncTask {
 
             String locationQuery = SunshinePreferences.getPreferredWeatherLocation(context);
 
-            ConnectivityManager cm
-                    = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo ai= cm.getActiveNetworkInfo();
-
-
-            if (ai != null) {
 
                 GetWeatherObject getWeatherObject = new GetWeatherObject(locationQuery);
                 getWeatherObject.getWeather(new WeatherObjectResult() {
@@ -117,14 +109,10 @@ public class SunshineSyncTask {
                     }
                 });
 
-
-
             /* Use the URL to retrieve the JSON */
                 //    String jsonWeatherResponse = NetworkUtils.getResponseFromHttpUrl(weatherRequestUrl);
 
             /* Parse the JSON into a list of weather values */
-
-
 
             /*
              * In cases where our JSON contained an error code, getWeatherContentValuesFromJson
@@ -132,12 +120,6 @@ public class SunshineSyncTask {
              * NullPointerExceptions being thrown. We also have no reason to insert fresh data if
              * there isn't any to insert.
              */
-
-            } else {
-              connection.connectionError();
-            }
-
-
 
         } catch (Exception e) {
             /* Server probably invalid */
