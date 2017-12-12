@@ -41,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.sunshine.R;
+import com.example.android.sunshine.data.Annotation;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
 import com.example.android.sunshine.retrofit.WeatherObject;
@@ -51,10 +52,12 @@ import com.example.android.sunshine.sync.SunshineSyncTask;
 import com.example.android.sunshine.sync.SunshineSyncUtils;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        ForecastAdapter.ForecastAdapterOnClickHandler{
+        ForecastAdapter.ForecastAdapterOnClickHandler {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -171,20 +174,45 @@ public class MainActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
 
         CheckNetworkConnection connection = new CheckNetworkConnection(this);
-        if (!connection.isNetworkConnectionAvailable(mRecyclerView.getVisibility()) ) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            textViewErrorConnection.setText("It is necessary to have network connection to get weather info!");
-            textViewErrorConnection.setVisibility(View.VISIBLE);
-            int finishTime = 2;
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    finish();
+        Class checkConnect = connection.getClass();
+        for (Method method : checkConnect.getDeclaredMethods()) {
+            Annotation annotation = (Annotation) method.getAnnotation(Annotation.class);
+            if (annotation instanceof Annotation) {
+                try {
+                  if (!(boolean) method.invoke(connection)) {
+                      mLoadingIndicator.setVisibility(View.INVISIBLE);
+                      textViewErrorConnection.setText("It is necessary to have network connection to get weather info!");
+                      textViewErrorConnection.setVisibility(View.VISIBLE);
+
+                      Handler handler = new Handler();
+                      handler.postDelayed(new Runnable() {
+                          public void run() {
+                              finish();
+                          }
+                      }, 2000);
+                  }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
                 }
-            }, finishTime * 1000);
+            }
+
         }
     }
-
+//        if (!connection.isNetworkConnectionAvailable(mRecyclerView.getVisibility()) ) {
+//            mLoadingIndicator.setVisibility(View.INVISIBLE);
+//            textViewErrorConnection.setText("It is necessary to have network connection to get weather info!");
+//            textViewErrorConnection.setVisibility(View.VISIBLE);
+//            int finishTime = 2;
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                public void run() {
+//                    finish();
+//                }
+//            }, finishTime * 1000);
+//        }
+//    }
 
 
     /**
@@ -199,25 +227,6 @@ public class MainActivity extends AppCompatActivity implements
      */
 
 
-    private  boolean isNetworkConnectionAvailable () {
-        ConnectivityManager cm
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo ai= cm.getActiveNetworkInfo();
-        if (ai != null) {
-            new SunshineSyncUtils().initialize(this);
-            return true;
-        } else {
-              if (mRecyclerView.getVisibility() == View.INVISIBLE) {
-               mLoadingIndicator.setVisibility(View.INVISIBLE);
-               textViewErrorConnection.setText("It is necessary to have internet connection to get weather info!");
-               textViewErrorConnection.setVisibility(View.VISIBLE);
-               return false;
-           } else {
-                  return true;
-              }
-
-        }
-    }
     private void openPreferredLocationInMap() {
         double[] coords = SunshinePreferences.getLocationCoordinates(this);
         String posLat = Double.toString(coords[0]);
@@ -275,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Called when a Loader has finished loading its data.
-     *
+     * <p>
      * NOTE: There is one small bug in this code. If no data is present in the cursor do to an
      * initial load being performed with no access to internet, the loading indicator will show
      * indefinitely, until data is present from the ContentProvider. This will be fixed in a
@@ -355,10 +364,8 @@ public class MainActivity extends AppCompatActivity implements
      * This is where we inflate and set up the menu for this Activity.
      *
      * @param menu The options menu in which you place your items.
-     *
      * @return You must return true for the menu to be displayed;
-     *         if you return false it will not be shown.
-     *
+     * if you return false it will not be shown.
      * @see #onPrepareOptionsMenu
      * @see #onOptionsItemSelected
      */
@@ -376,7 +383,6 @@ public class MainActivity extends AppCompatActivity implements
      * Callback invoked when a menu item was selected from this Activity's menu.
      *
      * @param item The menu item that was selected by the user
-     *
      * @return true if you handle the menu click here, false otherwise
      */
     @Override
@@ -395,8 +401,6 @@ public class MainActivity extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
     }
-
-
 
 
 }

@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
 
+import com.example.android.sunshine.data.Annotation;
 import com.example.android.sunshine.ui_component.MainActivity;
 
 /**
@@ -26,16 +27,18 @@ public class CheckNetworkConnection {
        mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
 
    }
-
-   public boolean isNetworkConnectionAvailable (int visibility) {
+   @Annotation
+   public boolean isNetworkConnectionAvailable () {
        if (mNetworkInfo != null) {
            new SunshineSyncUtils().initialize(mContext);
            return true;
        } else {
-         if (visibility == View.INVISIBLE) {
-          return false;
+           SunshineDatabaseOperations operations = new SunshineDatabaseOperations(mContext);
+
+         if (operations.checkContentOfDatabase()) {
+          return true;
        } else {
-             return  true;
+             return  false;
          }
    }
     }
