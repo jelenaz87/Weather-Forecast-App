@@ -1,5 +1,6 @@
 package com.example.android.sunshine.retrofit;
 
+import com.example.android.sunshine.messages.MessageBus;
 import com.example.android.sunshine.utilities.NetworkUtils;
 
 import java.util.concurrent.ArrayBlockingQueue;
@@ -26,13 +27,14 @@ public class GetWeatherObject {
     }
 
     public void getWeather(final WeatherObjectResult result) {
-        Call<WeatherObject>objectCall = ApiClient.getResponse().getWeatherObject(locationQuery, NetworkUtils.format, NetworkUtils.units, Integer.toString(NetworkUtils.numDays));
+        Call<WeatherObject>objectCall = ApiClient.getResponse().getWeatherObject();
         objectCall.enqueue(new Callback<WeatherObject>() {
                     @Override
                     public void onResponse(Call<WeatherObject> call, Response<WeatherObject> response) {
                         if (response.isSuccessful()) {
                             WeatherObject weatherObject = response.body();
-                            result.onSucess(weatherObject);
+                           // result.onSucess(weatherObject);
+                            MessageBus.getInstance().queue.postMessage(weatherObject);
 
                         } else {
                             result.onFailure("On response ");

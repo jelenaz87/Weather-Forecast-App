@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static final String BASE_URL = "https://andfun-weather.udacity.com/";
+    public static final String BASE_URL = "http://api.openweathermap.org/data/2.5/";
     private static GetClient mGetClient;
 
 

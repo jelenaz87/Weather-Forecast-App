@@ -11,19 +11,43 @@ import java.util.ArrayList;
 
 public class WeatherInfo {
 
-
-    @SerializedName(OpenWeatherJsonUtils.OWM_TEMPERATURE)
+    @SerializedName("main")
     private TemperatureObject temperatureObject;
-    @SerializedName(OpenWeatherJsonUtils.OWM_PRESSURE)
-    private double pressure;
-    @SerializedName(OpenWeatherJsonUtils.OWM_HUMIDITY)
-    private int humidity;
     @SerializedName(OpenWeatherJsonUtils.OWM_WEATHER)
     private ArrayList<WeatherDetail> weatherDetail = new ArrayList<>();
-    @SerializedName(OpenWeatherJsonUtils.OWM_WINDSPEED)
-    private double windSpeed;
-    @SerializedName(OpenWeatherJsonUtils.OWM_WIND_DIRECTION)
-    private double windDirection;
+    @SerializedName("clouds")
+    private Clouds clouds;
+    @SerializedName("wind")
+    private Wind windInfo;
+    @SerializedName("dt_txt")
+    private String time;
+
+    public Clouds getClouds() {
+        return clouds;
+    }
+
+    public void setClouds(Clouds clouds) {
+        this.clouds = clouds;
+    }
+
+    public Wind getWindInfo() {
+        return windInfo;
+    }
+
+    public void setWindInfo(Wind windInfo) {
+        this.windInfo = windInfo;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+
+
 
     public TemperatureObject getTemperatureObject() {
         return temperatureObject;
@@ -32,23 +56,6 @@ public class WeatherInfo {
     public void setTemperatureObject(TemperatureObject temperatureObject) {
         this.temperatureObject = temperatureObject;
     }
-
-    public double getPressure() {
-        return pressure;
-    }
-
-    public void setPressure(double pressure) {
-        this.pressure = pressure;
-    }
-
-    public int getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(int humidity) {
-        this.humidity = humidity;
-    }
-
     public ArrayList<WeatherDetail> getWeatherDetail() {
         return weatherDetail;
     }
@@ -56,23 +63,5 @@ public class WeatherInfo {
     public void setWeatherDetail(ArrayList<WeatherDetail> weatherDetail) {
         this.weatherDetail = weatherDetail;
     }
-
-    public double getWindSpeed() {
-        return windSpeed;
-    }
-
-    public void setWindSpeed(double windSpeed) {
-        this.windSpeed = windSpeed;
-    }
-
-    public double getWindDirection() {
-        return windDirection;
-    }
-
-    public void setWindDirection(double windDirection) {
-        this.windDirection = windDirection;
-    }
-
-
 
 }

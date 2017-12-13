@@ -9,15 +9,14 @@ import com.google.gson.annotations.SerializedName;
 
 public class TemperatureObject {
 
-    public  TemperatureObject() {
-
-    }
-
-
-    @SerializedName(OpenWeatherJsonUtils.OWM_MAX)
+    @SerializedName("temp_max")
     private double maxTemperature;
-    @SerializedName(OpenWeatherJsonUtils.OWM_MIN)
+    @SerializedName("temp_min")
     private double minTemperature;
+    @SerializedName(OpenWeatherJsonUtils.OWM_PRESSURE)
+    private double pressure;
+    @SerializedName(OpenWeatherJsonUtils.OWM_HUMIDITY)
+    private int humidity;
 
     public double getMaxTemperature() {
         return maxTemperature;
@@ -34,4 +33,20 @@ public class TemperatureObject {
     public void setMinTemperature(double minTemperature) {
         this.minTemperature = minTemperature;
     }
+    public double getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(double pressure) {
+        this.pressure = pressure;
+    }
+
+    public int getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
+    }
+
 }

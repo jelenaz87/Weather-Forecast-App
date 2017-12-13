@@ -146,10 +146,10 @@ public final class OpenWeatherJsonUtils {
 //             */
             dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * i;
 //
-            pressure = weatherObject.getList().get(i).getPressure();
-            humidity = weatherObject.getList().get(i).getHumidity();
-            windSpeed = weatherObject.getList().get(i).getWindSpeed();
-            windDirection = weatherObject.getList().get(i).getWindDirection();
+            pressure = weatherObject.getList().get(i).getTemperatureObject().getPressure();
+            humidity = weatherObject.getList().get(i).getTemperatureObject().getHumidity();
+            windSpeed = weatherObject.getList().get(i).getWindInfo().getWindSpeed();
+            windDirection = weatherObject.getList().get(i).getWindInfo().getWindDirection();
 //
 //            /*
 //             * Description is in a child array called "weather", which is 1 element long.

@@ -44,6 +44,8 @@ import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.Annotation;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
+import com.example.android.sunshine.messages.MessageBus;
+import com.example.android.sunshine.messages.MessageEvent;
 import com.example.android.sunshine.retrofit.WeatherObject;
 import com.example.android.sunshine.retrofit.WeatherObjectResult;
 import com.example.android.sunshine.sync.CheckNetworkConnection;
@@ -57,7 +59,7 @@ import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        ForecastAdapter.ForecastAdapterOnClickHandler {
+        ForecastAdapter.ForecastAdapterOnClickHandler, MessageEvent {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -165,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements
 
 
         showLoading();
+
+    //    MessageBus.getInstance().subscriber.register(MainActivity.class,this);
+
 
         /*
          * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
@@ -400,6 +405,12 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void message(Object o) {
+
     }
 
 

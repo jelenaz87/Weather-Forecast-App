@@ -22,6 +22,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.format.DateUtils;
 
+import com.example.android.sunshine.messages.MessageBus;
+import com.example.android.sunshine.messages.MessageEvent;
 import com.example.android.sunshine.retrofit.WeatherObject;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
@@ -41,7 +43,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class SunshineSyncTask {
+public class SunshineSyncTask implements MessageEvent {
 
     private final Context context;
     private SunshineDatabaseOperations sunshineDatabaseOperations;
@@ -56,6 +58,7 @@ public class SunshineSyncTask {
         weatherValues = null;
         sunshineDatabaseOperations = new SunshineDatabaseOperations(context);
         sunshineNotifications = new SunshineNotifications(context);
+        MessageBus.getInstance().subscriber.register(SunshineSyncTask.class,this);
 
 
 
@@ -91,16 +94,16 @@ public class SunshineSyncTask {
                     @Override
                     public void onSucess(WeatherObject object) {
 
-                        setContentValues(object);
+                     //   setContentValues(object);
 
-                        if (isWeatherNotNullAndLengthNotZero()) {
-
-                            sunshineDatabaseOperations.insertNewValueIntoDatabase(weatherValues);
-                            sunshineNotifications.setSunshineNotification();
-
-               /* If the code reaches this point, we have successfully performed our sync */
-
-                        }
+//                        if (isWeatherNotNullAndLengthNotZero()) {
+//
+//                            sunshineDatabaseOperations.insertNewValueIntoDatabase(weatherValues);
+//                            sunshineNotifications.setSunshineNotification();
+//
+//               /* If the code reaches this point, we have successfully performed our sync */
+//
+//                        }
                     }
 
                     @Override
@@ -141,7 +144,19 @@ public class SunshineSyncTask {
 
     }
 
-    public class Holder {
+    @Override
+    public void message(Object o) {
+        setContentValues((WeatherObject) o);
 
+                        if (isWeatherNotNullAndLengthNotZero()) {
+
+                            sunshineDatabaseOperations.insertNewValueIntoDatabase(weatherValues);
+                            sunshineNotifications.setSunshineNotification();
+
+               /* If the code reaches this point, we have successfully performed our sync */
+
+                        }
     }
+
+
 }

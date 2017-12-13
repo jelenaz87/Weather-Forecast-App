@@ -13,12 +13,8 @@ import java.util.ArrayList;
 
 public class WeatherObject {
 
-        public WeatherObject () {
-
-        }
-
         @SerializedName( OpenWeatherJsonUtils.OWM_MESSAGE_CODE)
-        private    int code;
+        private int code;
         @SerializedName(OpenWeatherJsonUtils.OWM_CITY)
          private CityObject cityObject;
         @SerializedName(OpenWeatherJsonUtils.OWM_LIST)
