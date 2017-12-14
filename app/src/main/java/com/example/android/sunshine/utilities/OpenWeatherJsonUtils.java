@@ -111,7 +111,7 @@ public final class OpenWeatherJsonUtils {
 
         SunshinePreferences.setLocationDetails(context, weatherObject.getCityObject().getCoordinate().getCityLatitude(), weatherObject.getCityObject().getCoordinate().getCityLongitude());
 
-        ContentValues[] weatherContentValues = new ContentValues[weatherObject.getList().size()];
+        ContentValues[] weatherContentValues = new ContentValues[weatherObject.getList().size()/8];
 
         /*
          * OWM returns daily forecasts based upon the local time of the city that is being asked
@@ -123,7 +123,7 @@ public final class OpenWeatherJsonUtils {
 //        long normalizedUtcStartDay = SunshineDateUtils.normalizeDate(now);
 
         long normalizedUtcStartDay = SunshineDateUtils.getNormalizedUtcDateForToday();
-
+        int y = 0;
         for (int i = 0; i < weatherObject.getList().size(); i++) {
 //
             long dateTimeMillis;
@@ -132,8 +132,8 @@ public final class OpenWeatherJsonUtils {
             double windSpeed;
             double windDirection;
 
-            double high;
-            double low;
+            double high, highInCelsius;
+            double low, lowInCelsius;
 
             int weatherId;
 //
@@ -144,7 +144,7 @@ public final class OpenWeatherJsonUtils {
 //             * We ignore all the datetime values embedded in the JSON and assume that
 //             * the values are returned in-order by day (which is not guaranteed to be correct).
 //             */
-            dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * i;
+            dateTimeMillis = normalizedUtcStartDay + SunshineDateUtils.DAY_IN_MILLIS * y;
 //
             pressure = weatherObject.getList().get(i).getTemperatureObject().getPressure();
             humidity = weatherObject.getList().get(i).getTemperatureObject().getHumidity();
@@ -170,7 +170,9 @@ public final class OpenWeatherJsonUtils {
 //             */
 //            JSONObject temperatureObject = dayForecast.getJSONObject(OWM_TEMPERATURE);
             high = weatherObject.getList().get(i).getTemperatureObject().getMaxTemperature();
+            highInCelsius = SunshineWeatherUtils.formatInCelsius(high);
             low = weatherObject.getList().get(i).getTemperatureObject().getMinTemperature();
+            lowInCelsius = SunshineWeatherUtils.formatInCelsius(low);
 
             ContentValues weatherValues = new ContentValues();
             weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DATE, dateTimeMillis);
@@ -178,11 +180,13 @@ public final class OpenWeatherJsonUtils {
             weatherValues.put(WeatherContract.WeatherEntry.COLUMN_PRESSURE, pressure);
             weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WIND_SPEED, windSpeed);
             weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DEGREES, windDirection);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP, high);
-            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP, low);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP, highInCelsius);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP, lowInCelsius);
             weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID, weatherId);
 
-            weatherContentValues[i] = weatherValues;
+            weatherContentValues[y] = weatherValues;
+            y++;
+            i = i+7;
         }
     return weatherContentValues;
     }

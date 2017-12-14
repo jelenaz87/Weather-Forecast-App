@@ -61,6 +61,8 @@
             android:authorities="@string/content_authority"
             android:exported="false"/>
 
+       
+
         <!--This is required for immediate syncs -->
         <service
             android:name=".sync.SunshineSyncIntentService"

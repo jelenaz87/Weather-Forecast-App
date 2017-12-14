@@ -16,27 +16,25 @@ public class WeatherInfo {
     @SerializedName(OpenWeatherJsonUtils.OWM_WEATHER)
     private ArrayList<WeatherDetail> weatherDetail = new ArrayList<>();
     @SerializedName("clouds")
-    private Clouds clouds;
+    private Clouds mClouds;
     @SerializedName("wind")
     private Wind windInfo;
-    @SerializedName("dt_txt")
-    private String time;
 
-    public Clouds getClouds() {
-        return clouds;
-    }
 
-    public void setClouds(Clouds clouds) {
-        this.clouds = clouds;
-    }
 
     public Wind getWindInfo() {
         return windInfo;
     }
 
-    public void setWindInfo(Wind windInfo) {
-        this.windInfo = windInfo;
+    public Clouds getmClouds() {
+        return mClouds;
     }
+
+    @SerializedName("dt_txt")
+
+    private String time;
+
+
 
     public String getTime() {
         return time;

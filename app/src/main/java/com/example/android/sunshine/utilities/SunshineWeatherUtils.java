@@ -65,6 +65,11 @@ public final class SunshineWeatherUtils {
         return String.format(context.getString(temperatureFormatResourceId), temperature);
     }
 
+    public static double formatInCelsius ( double temp) {
+        double tempInCelsius = temp -273.15;
+        return tempInCelsius;
+    }
+
     /**
      * This method will format the temperatures to be displayed in the
      * following form: "HIGH° / LOW°"
