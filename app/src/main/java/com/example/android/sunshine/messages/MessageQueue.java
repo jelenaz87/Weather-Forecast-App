@@ -15,21 +15,23 @@ public class MessageQueue {
     public static ArrayBlockingQueue<Object> listMessages = new ArrayBlockingQueue<>(16);
 
 
-    public void postMessage (Object object) {
-     listMessages.add(object);
-     getMessage();
+    public void postMessage(Object object) {
+        listMessages.add(object);
+        getMessage();
     }
 
-    private void getMessage () {
-     Object o = listMessages.remove();
-     if (RegisterSubscriber.listSubscribers.containsKey(SunshineSyncTask.class)) {
-         RegisterSubscriber.listSubscribers.get(SunshineSyncTask.class).message(o);
-     }
+    private void getMessage() {
+        Object o = listMessages.remove();
+        Class<?> aClass = o.getClass();
+        if (RegisterSubscriber.listSubscribers.containsKey(aClass)) {
+            for (int i = 0; i < RegisterSubscriber.listSubscribers.get(aClass).size(); i++) {
+                RegisterSubscriber.listSubscribers.get(aClass).get(i).message(o);
+            }
 
-     }
-
+        }
 
 
     }
+}
 
 

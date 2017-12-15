@@ -58,7 +58,7 @@ public class SunshineSyncTask implements MessageEvent {
         weatherValues = null;
         sunshineDatabaseOperations = new SunshineDatabaseOperations(context);
         sunshineNotifications = new SunshineNotifications(context);
-        MessageBus.getInstance().subscriber.register(SunshineSyncTask.class,this);
+        MessageBus.getInstance().subscriber.register(WeatherObject.class,this);
 
 
 
@@ -156,6 +156,8 @@ public class SunshineSyncTask implements MessageEvent {
                /* If the code reaches this point, we have successfully performed our sync */
 
                         }
+
+        MessageBus.getInstance().subscriber.unRegister(WeatherObject.class,this);
     }
 
 

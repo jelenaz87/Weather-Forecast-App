@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final int INDEX_WEATHER_MIN_TEMP = 2;
     public static final int INDEX_WEATHER_CONDITION_ID = 3;
 
+    MainActivity mainActivity;
 
     /*
          * This ID will be used to identify the Loader responsible for loading our weather forecast. In
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements
          * do things like set the adapter of the RecyclerView and toggle the visibility.
          */
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
-
+        mainActivity = this;
         /*
          * The ProgressBar that will indicate to the user that we are loading data. It will be
          * hidden when no data is loading.
@@ -169,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
         showLoading();
+
+
 
     //    MessageBus.getInstance().subscriber.register(MainActivity.class,this);
 
@@ -232,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements
      * Protip: Hold Command on Mac or Control on Windows and click that link to automagically
      * open the Common Intents page
      */
+
 
 
     private void openPreferredLocationInMap() {

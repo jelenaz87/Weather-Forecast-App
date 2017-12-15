@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
 
+import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.Annotation;
 import com.example.android.sunshine.ui_component.MainActivity;
 
@@ -21,10 +22,12 @@ public class CheckNetworkConnection {
 
 
 
+
    public CheckNetworkConnection (Context context) {
-       mContext = context;
+       this.mContext = context;
        mConnectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
        mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+
 
    }
    @Annotation
