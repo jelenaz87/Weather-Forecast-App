@@ -44,6 +44,8 @@ import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.Annotation;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
+import com.example.android.sunshine.di.DaggerDaggerExampleComponent;
+import com.example.android.sunshine.di.DaggerExampleModule;
 import com.example.android.sunshine.messages.MessageBus;
 import com.example.android.sunshine.messages.MessageEvent;
 import com.example.android.sunshine.retrofit.WeatherObject;
@@ -56,6 +58,8 @@ import com.example.android.sunshine.sync.SunshineSyncUtils;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final int INDEX_WEATHER_MIN_TEMP = 2;
     public static final int INDEX_WEATHER_CONDITION_ID = 3;
 
-    MainActivity mainActivity;
+
 
     /*
          * This ID will be used to identify the Loader responsible for loading our weather forecast. In
@@ -94,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements
          * it is unique and consistent.
          */
     private static final int ID_FORECAST_LOADER = 44;
-
-    private ForecastAdapter mForecastAdapter;
+    @Inject
+    ForecastAdapter mForecastAdapter;
     public RecyclerView mRecyclerView;
     private int mPosition = RecyclerView.NO_POSITION;
 
@@ -109,12 +113,13 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_forecast);
         getSupportActionBar().setElevation(0f);
 
+        DaggerDaggerExampleComponent.builder().daggerExampleModule(new DaggerExampleModule(this, this)).build().inject(this);
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
          * do things like set the adapter of the RecyclerView and toggle the visibility.
          */
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
-        mainActivity = this;
+
         /*
          * The ProgressBar that will indicate to the user that we are loading data. It will be
          * hidden when no data is loading.
@@ -163,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements
          * MainActivity implements the ForecastAdapter ForecastOnClickHandler interface, "this"
          * is also an instance of that type of handler.
          */
-        mForecastAdapter = new ForecastAdapter(this, this);
+     //   mForecastAdapter = new ForecastAdapter(this, this);
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mForecastAdapter);
