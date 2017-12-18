@@ -37,6 +37,12 @@ import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
 import com.example.android.sunshine.sync.SunshineSyncUtils;
 
+import javax.inject.Inject;
+
+import di.DaggerDaggerExampleComponent;
+import di.DaggerExampleModule;
+
+
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         ForecastAdapter.ForecastAdapterOnClickHandler {
@@ -74,7 +80,9 @@ public class MainActivity extends AppCompatActivity implements
      */
     private static final int ID_FORECAST_LOADER = 44;
 
-    private ForecastAdapter mForecastAdapter;
+    @Inject
+    ForecastAdapter mForecastAdapter;
+
     private RecyclerView mRecyclerView;
     private int mPosition = RecyclerView.NO_POSITION;
 
@@ -87,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_forecast);
         getSupportActionBar().setElevation(0f);
 
+        DaggerDaggerExampleComponent.builder().daggerExampleModule(new DaggerExampleModule(this,this)).build().inject(this);
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
          * do things like set the adapter of the RecyclerView and toggle the visibility.
@@ -138,7 +147,8 @@ public class MainActivity extends AppCompatActivity implements
          * MainActivity implements the ForecastAdapter ForecastOnClickHandler interface, "this"
          * is also an instance of that type of handler.
          */
-        mForecastAdapter = new ForecastAdapter(this, this);
+       // mForecastAdapter = new ForecastAdapter(this, this);
+       // mForecastAdapter = new ForecastAdapter(this, this);
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mForecastAdapter);

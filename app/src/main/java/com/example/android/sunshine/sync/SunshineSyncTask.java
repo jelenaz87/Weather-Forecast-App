@@ -33,6 +33,9 @@ import org.json.JSONException;
 
 import java.net.URL;
 
+import di.DaggerExampleComponent;
+
+
 public class SunshineSyncTask {
 
     private final Context context;
@@ -44,7 +47,10 @@ public class SunshineSyncTask {
         this.context = context;
         weatherValues = null;
         sunshineDatabaseOperations = new SunshineDatabaseOperations(context);
+
         sunshineNotifications = new SunshineNotifications(context);
+
+
     }
 
     /**
