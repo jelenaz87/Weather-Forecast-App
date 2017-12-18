@@ -10,6 +10,8 @@ import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.Annotation;
 import com.example.android.sunshine.ui_component.MainActivity;
 
+import javax.inject.Inject;
+
 /**
  * Created by jelena.zivanovic on 12/11/2017.
  */
@@ -22,7 +24,7 @@ public class CheckNetworkConnection {
 
 
 
-
+   @Inject
    public CheckNetworkConnection (Context context) {
        this.mContext = context;
        mConnectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);

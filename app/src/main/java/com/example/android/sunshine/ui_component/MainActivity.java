@@ -44,7 +44,9 @@ import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.Annotation;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
-import com.example.android.sunshine.di.DaggerDaggerExampleComponent;
+import com.example.android.sunshine.di.DaggerCheckNetworkConnection;
+
+import com.example.android.sunshine.di.DaggerExampleComponent;
 import com.example.android.sunshine.di.DaggerExampleModule;
 import com.example.android.sunshine.messages.MessageBus;
 import com.example.android.sunshine.messages.MessageEvent;
@@ -100,6 +102,10 @@ public class MainActivity extends AppCompatActivity implements
     private static final int ID_FORECAST_LOADER = 44;
     @Inject
     ForecastAdapter mForecastAdapter;
+
+    @Inject
+    CheckNetworkConnection connection;
+
     public RecyclerView mRecyclerView;
     private int mPosition = RecyclerView.NO_POSITION;
 
@@ -113,7 +119,9 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_forecast);
         getSupportActionBar().setElevation(0f);
 
-        DaggerDaggerExampleComponent.builder().daggerExampleModule(new DaggerExampleModule(this, this)).build().inject(this);
+         DaggerDaggerExampleComponent.builder().daggerExampleModule( new DaggerExampleModule(this,this)).build().inject(this);
+         DaggerDaggerCheckNetworkComponent.builder().daggerCheckNetworkConnection(new DaggerCheckNetworkConnection( this)).build().inject(this);
+
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
          * do things like set the adapter of the RecyclerView and toggle the visibility.
@@ -188,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
 
-        CheckNetworkConnection connection = new CheckNetworkConnection(this);
+       // connection = new CheckNetworkConnection(this);
         Class checkConnect = connection.getClass();
         for (Method method : checkConnect.getDeclaredMethods()) {
             Annotation annotation = (Annotation) method.getAnnotation(Annotation.class);

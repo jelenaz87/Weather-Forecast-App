@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.WeatherContract;
+
 import com.example.android.sunshine.databinding.ActivityDetailBinding;
 import com.example.android.sunshine.messages.MessageBus;
 import com.example.android.sunshine.messages.MessageEvent;
