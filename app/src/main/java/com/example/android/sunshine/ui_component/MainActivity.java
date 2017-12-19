@@ -15,16 +15,11 @@
  */
 package com.example.android.sunshine.ui_component;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -38,30 +33,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.Annotation;
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
-import com.example.android.sunshine.di.DaggerCheckNetworkConnection;
 
-import com.example.android.sunshine.di.DaggerExampleComponent;
+
+import com.example.android.sunshine.di.DaggerDaggerExampleComponent;
 import com.example.android.sunshine.di.DaggerExampleModule;
 import com.example.android.sunshine.messages.MessageBus;
 import com.example.android.sunshine.messages.MessageEvent;
-import com.example.android.sunshine.retrofit.WeatherObject;
-import com.example.android.sunshine.retrofit.WeatherObjectResult;
 import com.example.android.sunshine.sync.CheckNetworkConnection;
-import com.example.android.sunshine.sync.SunshineDatabaseOperations;
-import com.example.android.sunshine.sync.SunshineSyncTask;
-import com.example.android.sunshine.sync.SunshineSyncUtils;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.inject.Inject;
+
+
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
@@ -103,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements
     @Inject
     ForecastAdapter mForecastAdapter;
 
-    @Inject
-    CheckNetworkConnection connection;
+
+    public CheckNetworkConnection connection;
 
     public RecyclerView mRecyclerView;
     private int mPosition = RecyclerView.NO_POSITION;
@@ -120,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setElevation(0f);
 
          DaggerDaggerExampleComponent.builder().daggerExampleModule( new DaggerExampleModule(this,this)).build().inject(this);
-         DaggerDaggerCheckNetworkComponent.builder().daggerCheckNetworkConnection(new DaggerCheckNetworkConnection( this)).build().inject(this);
 
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
@@ -196,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
 
-       // connection = new CheckNetworkConnection(this);
+        connection = new CheckNetworkConnection(this);
         Class checkConnect = connection.getClass();
         for (Method method : checkConnect.getDeclaredMethods()) {
             Annotation annotation = (Annotation) method.getAnnotation(Annotation.class);

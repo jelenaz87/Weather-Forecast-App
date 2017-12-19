@@ -1,6 +1,6 @@
 package com.example.android.sunshine.di;
 
-import com.example.android.sunshine.sync.CheckNetworkConnection;
+
 import com.example.android.sunshine.ui_component.MainActivity;
 
 import dagger.Component;
