@@ -24,7 +24,6 @@ public class CheckNetworkConnection {
 
 
 
-   @Inject
    public CheckNetworkConnection (Context context) {
        this.mContext = context;
        mConnectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);

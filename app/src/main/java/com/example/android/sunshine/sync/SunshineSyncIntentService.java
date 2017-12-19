@@ -18,11 +18,23 @@ package com.example.android.sunshine.sync;
 import android.app.IntentService;
 import android.content.Intent;
 
+import com.example.android.sunshine.di.DaggerDaggerServiceComponent;
+import com.example.android.sunshine.di.DaggerSunshineSyncTaskModule;
+
+import javax.inject.Inject;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
  */
 public class SunshineSyncIntentService extends IntentService {
+    @Inject SunshineSyncTask mTask;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        DaggerDaggerServiceComponent.builder().daggerSunshineSyncTaskModule(new DaggerSunshineSyncTaskModule(this)).build().inject(this);
+    }
 
     public SunshineSyncIntentService() {
         super("SunshineSyncIntentService");
@@ -31,6 +43,6 @@ public class SunshineSyncIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-       new SunshineSyncTask(this).syncWeather();
+    mTask.syncWeather();
     }
 }

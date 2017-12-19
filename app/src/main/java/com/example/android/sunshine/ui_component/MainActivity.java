@@ -42,7 +42,7 @@ import com.example.android.sunshine.data.WeatherContract;
 
 import com.example.android.sunshine.di.DaggerDaggerExampleComponent;
 import com.example.android.sunshine.di.DaggerExampleModule;
-import com.example.android.sunshine.messages.MessageBus;
+import com.example.android.sunshine.di.DaggerNetworkConnectionModule;
 import com.example.android.sunshine.messages.MessageEvent;
 import com.example.android.sunshine.sync.CheckNetworkConnection;
 
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements
     @Inject
     ForecastAdapter mForecastAdapter;
 
-
-    public CheckNetworkConnection connection;
+    @Inject
+    CheckNetworkConnection connection;
 
     public RecyclerView mRecyclerView;
     private int mPosition = RecyclerView.NO_POSITION;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_forecast);
         getSupportActionBar().setElevation(0f);
 
-         DaggerDaggerExampleComponent.builder().daggerExampleModule( new DaggerExampleModule(this,this)).build().inject(this);
+         DaggerDaggerExampleComponent.builder().daggerExampleModule( new DaggerExampleModule(this,this)).daggerNetworkConnectionModule(new DaggerNetworkConnectionModule()).build().inject(this);
 
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, this);
 
-        connection = new CheckNetworkConnection(this);
+      //  connection = new CheckNetworkConnection(this);
         Class checkConnect = connection.getClass();
         for (Method method : checkConnect.getDeclaredMethods()) {
             Annotation annotation = (Annotation) method.getAnnotation(Annotation.class);

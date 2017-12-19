@@ -19,16 +19,25 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.example.android.sunshine.di.DaggerDaggerServiceComponent;
+import com.example.android.sunshine.di.DaggerSunshineSyncTaskModule;
 import com.example.android.sunshine.ui_component.MainActivity;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.firebase.jobdispatcher.RetryStrategy;
 
+import javax.inject.Inject;
+
 
 public class SunshineFirebaseJobService extends JobService {
 
     private AsyncTask<Void, Void, Void> mFetchWeatherTask;
+
+    @Inject
+    SunshineSyncTask mTask;
+
+
 
 
     /**
@@ -49,7 +58,7 @@ public class SunshineFirebaseJobService extends JobService {
             @Override
             protected Void doInBackground(Void... voids) {
                 Context context = getApplicationContext();
-                new  SunshineSyncTask(context).syncWeather();
+             mTask.syncWeather();
                 jobFinished(jobParameters, false);
                 return null;
             }
@@ -63,6 +72,14 @@ public class SunshineFirebaseJobService extends JobService {
         mFetchWeatherTask.execute();
         return true;
     }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        DaggerDaggerServiceComponent.builder().daggerSunshineSyncTaskModule(new DaggerSunshineSyncTaskModule(this)).build().inject(this);
+        }
+
 
     /**
      * Called when the scheduling engine has decided to interrupt the execution of a running job,

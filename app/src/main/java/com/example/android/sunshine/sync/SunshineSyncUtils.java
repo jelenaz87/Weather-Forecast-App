@@ -16,24 +16,11 @@
 package com.example.android.sunshine.sync;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.example.android.sunshine.data.WeatherContract;
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.Driver;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.Trigger;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class SunshineSyncUtils {
 
@@ -116,6 +103,7 @@ public class SunshineSyncUtils {
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
+      //  DaggerDaggerServiceComponent.builder().daggerSunshineSyncTaskModule(new DaggerSunshineSyncTaskModule(context)).build().inject(context);
 
         /*
          * Only perform initialization once per app lifetime. If initialization has already been
@@ -129,6 +117,7 @@ public class SunshineSyncUtils {
          * This method call triggers Sunshine to create its task to synchronize weather data
          * periodically.
          */
+
         new FirebaseJobDispatcherSync(context).scheduleFirebaseJobDispatcherSync();
         executor.execute(new CheckForEmptyRunnable(context));
 
