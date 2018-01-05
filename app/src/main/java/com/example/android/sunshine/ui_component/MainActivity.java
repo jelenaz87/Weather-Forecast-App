@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements
          * MainActivity implements the ForecastAdapter ForecastOnClickHandler interface, "this"
          * is also an instance of that type of handler.
          */
-     //   mForecastAdapter = new ForecastAdapter(this, this);
+      //  mForecastAdapter = new ForecastAdapter(this, this);
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(mForecastAdapter);
@@ -212,19 +212,6 @@ public class MainActivity extends AppCompatActivity implements
 
         }
     }
-//        if (!connection.isNetworkConnectionAvailable(mRecyclerView.getVisibility()) ) {
-//            mLoadingIndicator.setVisibility(View.INVISIBLE);
-//            textViewErrorConnection.setText("It is necessary to have network connection to get weather info!");
-//            textViewErrorConnection.setVisibility(View.VISIBLE);
-//            int finishTime = 2;
-//            Handler handler = new Handler();
-//            handler.postDelayed(new Runnable() {
-//                public void run() {
-//                    finish();
-//                }
-//            }, finishTime * 1000);
-//        }
-//    }
 
 
     /**

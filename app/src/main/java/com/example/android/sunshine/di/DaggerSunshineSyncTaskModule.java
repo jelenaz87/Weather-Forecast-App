@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.example.android.sunshine.sync.SunshineSyncTask;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 

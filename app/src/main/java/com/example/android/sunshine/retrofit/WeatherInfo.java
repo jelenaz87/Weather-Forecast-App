@@ -31,7 +31,6 @@ public class WeatherInfo {
     }
 
     @SerializedName("dt_txt")
-
     private String time;
 
 
